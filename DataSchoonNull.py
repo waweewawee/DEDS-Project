@@ -7,11 +7,12 @@ connection_string = f'DRIVER={{SQL Server}};SERVER={server_name};DATABASE={datab
 connection = pyodbc.connect(connection_string)
 cursor = connection.cursor()
 
-# Update Klant table
+
 update_klant_query = """
 UPDATE Klant
 SET
     KlantNaam = ISNULL(KlantNaam, 'onbekend'),
+    KlantStad = ISNULL(KlantStad, 'onbekend'),
     KlantAdres = ISNULL(KlantAdres, 'onbekend'),
     KlantEmail = ISNULL(KlantEmail, 'onbekend'),
     KlantTelefoon = ISNULL(KlantTelefoon, 'onbekend'),
@@ -20,6 +21,7 @@ SET
     KlantStaat = ISNULL(KlantStaat, 'onbekend')
 WHERE
     KlantNaam IS NULL
+    OR KlantStad IS NULL
     OR KlantAdres IS NULL
     OR KlantEmail IS NULL
     OR KlantTelefoon IS NULL
@@ -31,7 +33,6 @@ WHERE
 cursor.execute(update_klant_query)
 connection.commit()
 
-# Update Locatie table
 update_locatie_query = """
 UPDATE Locatie
 SET
@@ -49,7 +50,6 @@ WHERE
 cursor.execute(update_locatie_query)
 connection.commit()
 
-# Update Product table
 update_product_query = """
 UPDATE Product
 SET
@@ -69,7 +69,6 @@ WHERE
 cursor.execute(update_product_query)
 connection.commit()
 
-# Update Review table
 update_review_query = """
 UPDATE Review
 SET
@@ -81,6 +80,16 @@ WHERE
 cursor.execute(update_review_query)
 connection.commit()
 
-# Close the connection
+update_verkoop_query = """
+UPDATE Verkoop
+SET
+    Aantal = ISNULL(Aantal, '-1')
+WHERE
+    Aantal IS NULL
+"""
+
+cursor.execute(update_verkoop_query)
+connection.commit()
+
 cursor.close()
 connection.close()
